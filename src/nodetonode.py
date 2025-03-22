@@ -101,3 +101,12 @@ def text_to_textnodes(text: str) -> list[TextNode]:
     nodes = split_nodes_image(nodes)
     nodes = split_nodes_link(nodes)
     return nodes
+
+def markdown_to_blocks(markdown: str) -> list[str]:
+    # split into blocks
+    blocks = markdown.split("\n\n")
+    # remove empty lines
+    sans_empty_lines = [block.strip() for block in blocks if block.strip()]
+    # trim
+    trimmed_blocks = ["\n".join(map(lambda s: s.strip(), block.split("\n"))) for block in sans_empty_lines]
+    return trimmed_blocks
