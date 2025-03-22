@@ -84,19 +84,17 @@ def split_nodes_link(old_nodes: list[TextNode]) -> list[TextNode]:
                     new_nodes.append(TextNode(original_text, TextType.TEXT))
     return new_nodes
 
-    def text_to_textnodes(text: str) -> list[TextNode]:
-        text_nodes = []
-        for line in text.split("\n"):
-            if line.startswith("#"):
-                text_nodes.append(TextNode(line, TextType.BOLD))
-            elif line.startswith("*"):
-                text_nodes.append(TextNode(line, TextType.ITALIC))
-            elif line.startswith("`"):
-                text_nodes.append(TextNode(line, TextType.CODE))
-            elif line.startswith("!"):
-                text_nodes.append(TextNode(line, TextType.IMAGE))
-            elif line.startswith("["):
-                text_nodes.append(TextNode(line, TextType.LINK))
-            else:
-                text_nodes.append(TextNode(line, TextType.TEXT))
-        return text_nodes
+def text_to_textnodes(text: str) -> list[TextNode]:
+    init_node = TextNode(text, TextType.TEXT)
+    delimiters = [
+        ("`", TextType.CODE),
+        ("**", TextType.BOLD),
+        ("_", TextType.ITALIC)
+    ]
+    nodes = []
+    for char, text_type in delimiters:
+        nodes = split_nodes_delimiter(nodes or [init_node], char, text_type)
+
+    nodes = split_nodes_image(nodes)
+    nodes = split_nodes_link(nodes)
+    return nodes
