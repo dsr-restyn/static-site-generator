@@ -33,30 +33,44 @@ def split_nodes_delimiter(old_nodes: list[TextNode], delimiter: str, text_type: 
 
 def extract_markdown_images(text: str) -> list[tuple[str, str]]:
     return re.findall(r"!\[([^\[\]]*)\]\(([^\(\)]*)\)", text)
-    
+
 
 def extract_markdown_links(text: str) -> list[tuple[str, str]]:
     return re.findall(r"(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)", text)
 
 def split_nodes_image(old_nodes: list[TextNode]) -> list[TextNode]:
     new_nodes = []
-    image_nodes = []
     for node in old_nodes:
         if node.text_type != TextType.TEXT:
-            image_nodes.append(node)
+            new_nodes.append(node)
         else:
             images = extract_markdown_images(node.text)
-            for image in images:
-                image_nodes.append(TextNode(image[0], image[1], TextType.IMAGE))
-    return image_nodes
+            original_text = node.text
+            if not images:
+                new_nodes.append(node)
+            else:
+                for img_alt, img_src in images:
+                    sections = original_text.split(f"![{img_alt}]({img_src})", 1)
+                    new_nodes.append(TextNode(sections[0], TextType.TEXT))
+                    new_nodes.append(TextNode(img_alt, TextType.IMAGE, img_src))
+                    original_text = sections[1]
+    return new_nodes
 
 def split_nodes_link(old_nodes: list[TextNode]) -> list[TextNode]:
-    link_nodes = []
+    new_nodes = []
     for node in old_nodes:
         if node.text_type != TextType.TEXT:
-            link_nodes.append(node)
+            new_nodes.append(node)
         else:
             links = extract_markdown_links(node.text)
-            for link in links:
-                link_nodes.append(TextNode(link[0], link[1], TextType.LINK))
-    return link_nodes
+            print(links)
+            original_text = node.text
+            if not links:
+                new_nodes.append(node)
+            else:
+                for link_txt, link_src in links:
+                    sections = original_text.split(f"[{link_txt}]({link_src})", 1)
+                    new_nodes.append(TextNode(sections[0], TextType.TEXT))
+                    new_nodes.append(TextNode(link_txt, TextType.LINK, link_src))
+                    original_text = sections[1]
+    return new_nodes
