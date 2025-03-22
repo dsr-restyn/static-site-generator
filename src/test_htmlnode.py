@@ -2,6 +2,9 @@ import unittest
 
 from htmlnode import HTMLNode, LeafNode, ParentNode
 
+# TODO:
+# Move tests out of src directory
+
 class TestHTMLNode(unittest.TestCase):
     def test_eq(self):
         node = HTMLNode("p", "This is a paragraph")

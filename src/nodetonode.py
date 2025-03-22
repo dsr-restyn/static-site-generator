@@ -3,6 +3,9 @@ from htmlnode import LeafNode
 
 import re
 
+# TODO:
+# Make this file make sense, currently its just a bunch of helpers
+
 def text_node_to_html(text_node: TextNode):
     if text_node.text_type == TextType.BOLD:
         return LeafNode("strong", text_node.text)

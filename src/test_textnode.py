@@ -1,6 +1,9 @@
 import unittest
 import textnode, nodetonode
 
+# TODO:
+# Move tests out of src directory
+
 
 class TestTextNode(unittest.TestCase):
     def test_eq(self):
