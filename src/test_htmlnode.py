@@ -2,7 +2,7 @@ import unittest
 
 from htmlnode import HTMLNode, LeafNode, ParentNode
 
-class TestHtmlNode(unittest.TestCase):
+class TestHTMLNode(unittest.TestCase):
     def test_eq(self):
         node = HTMLNode("p", "This is a paragraph")
         node2 = HTMLNode("p", "This is a paragraph")

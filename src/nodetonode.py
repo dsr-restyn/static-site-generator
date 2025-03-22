@@ -53,7 +53,12 @@ def split_nodes_image(old_nodes: list[TextNode]) -> list[TextNode]:
                     sections = original_text.split(f"![{img_alt}]({img_src})", 1)
                     new_nodes.append(TextNode(sections[0], TextType.TEXT))
                     new_nodes.append(TextNode(img_alt, TextType.IMAGE, img_src))
-                    original_text = sections[1]
+                    if len(sections) > 1:
+                        original_text = sections[1]
+                    else:
+                        original_text = ""
+                if original_text and original_text != node.text:
+                    new_nodes.append(TextNode(original_text, TextType.TEXT))
     return new_nodes
 
 def split_nodes_link(old_nodes: list[TextNode]) -> list[TextNode]:
@@ -63,7 +68,6 @@ def split_nodes_link(old_nodes: list[TextNode]) -> list[TextNode]:
             new_nodes.append(node)
         else:
             links = extract_markdown_links(node.text)
-            print(links)
             original_text = node.text
             if not links:
                 new_nodes.append(node)
@@ -72,5 +76,27 @@ def split_nodes_link(old_nodes: list[TextNode]) -> list[TextNode]:
                     sections = original_text.split(f"[{link_txt}]({link_src})", 1)
                     new_nodes.append(TextNode(sections[0], TextType.TEXT))
                     new_nodes.append(TextNode(link_txt, TextType.LINK, link_src))
-                    original_text = sections[1]
+                    if len(sections) > 1:
+                        original_text = sections[1]
+                    else:
+                        original_text = ""
+                if original_text and original_text != node.text:
+                    new_nodes.append(TextNode(original_text, TextType.TEXT))
     return new_nodes
+
+    def text_to_textnodes(text: str) -> list[TextNode]:
+        text_nodes = []
+        for line in text.split("\n"):
+            if line.startswith("#"):
+                text_nodes.append(TextNode(line, TextType.BOLD))
+            elif line.startswith("*"):
+                text_nodes.append(TextNode(line, TextType.ITALIC))
+            elif line.startswith("`"):
+                text_nodes.append(TextNode(line, TextType.CODE))
+            elif line.startswith("!"):
+                text_nodes.append(TextNode(line, TextType.IMAGE))
+            elif line.startswith("["):
+                text_nodes.append(TextNode(line, TextType.LINK))
+            else:
+                text_nodes.append(TextNode(line, TextType.TEXT))
+        return text_nodes
