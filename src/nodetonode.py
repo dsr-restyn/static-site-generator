@@ -10,13 +10,15 @@ def text_node_to_html(text_node: TextNode):
     if text_node.text_type == TextType.BOLD:
         return LeafNode("strong", text_node.text)
     elif text_node.text_type == TextType.ITALIC:
-        return LeafNode("em", text_node.text)
+        return LeafNode("i", text_node.text)
     elif text_node.text_type == TextType.CODE:
         return LeafNode("code", text_node.text)
     elif text_node.text_type == TextType.LINK:
         return LeafNode("a", text_node.text, {"href": text_node.url})
     elif text_node.text_type == TextType.IMAGE:
         return LeafNode("img", '', {"src": text_node.url, "alt": text_node.text})
+    elif text_node.text_type == TextType.TEXT:
+        return LeafNode(None, text_node.text)
     else:
         raise ValueError("Invalid text type")
 
@@ -104,9 +106,13 @@ def text_to_textnodes(text: str) -> list[TextNode]:
 
 def markdown_to_blocks(markdown: str) -> list[str]:
     # split into blocks
+    # print(f"{markdown=}")
     blocks = markdown.split("\n\n")
+    # print(f"{blocks=}")
     # remove empty lines
     sans_empty_lines = [block.strip() for block in blocks if block.strip()]
+    # print(f"{sans_empty_lines=}")
     # trim
     trimmed_blocks = ["\n".join(map(lambda s: s.strip(), block.split("\n"))) for block in sans_empty_lines]
+    print(f"{trimmed_blocks=}")
     return trimmed_blocks

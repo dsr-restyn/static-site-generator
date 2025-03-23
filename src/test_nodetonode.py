@@ -180,7 +180,7 @@ class TestNodeToNode(unittest.TestCase):
         self.assertEqual(image_split_nodes, nodes)
 
     def test_text_to_textnodes(self):
-        text = "This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
+        text = "This is **text** with an _italic_ word and a ```code block``` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
         nodes = nodetonode.text_to_textnodes(text)
         self.assertEqual(nodes, [
             TextNode("This is ", TextType.TEXT),
@@ -194,7 +194,7 @@ class TestNodeToNode(unittest.TestCase):
             TextNode(" and a ", TextType.TEXT),
             TextNode("link", TextType.LINK, "https://boot.dev"),
         ])
-    
+
     def test_markdown_to_blocks(self):
         md = """
         # This is a heading
@@ -230,7 +230,7 @@ class TestNodeToNode(unittest.TestCase):
                 "This is another paragraph with _italic_ text and `code` here\nThis is the same paragraph on a new line",
                 "- This is a list\n- with items",
             ],
-        )        
+        )
 
 
 if __name__ == "__main__":
