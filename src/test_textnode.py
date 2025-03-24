@@ -38,7 +38,7 @@ class TestTextNode(unittest.TestCase):
     # region text_node_to_html
     def test_text_node_to_html_bold(self):
         node = textnode.TextNode("This is a text node", textnode.TextType.BOLD)
-        self.assertEqual(nodetonode.text_node_to_html(node).to_html(), '<strong>This is a text node</strong>')
+        self.assertEqual(nodetonode.text_node_to_html(node).to_html(), '<b>This is a text node</b>')
         node2 = textnode.TextNode("This is a link node", textnode.TextType.LINK, "https://www.example.com")
         self.assertEqual(nodetonode.text_node_to_html(node2).to_html(), '<a href="https://www.example.com">This is a link node</a>')
         node3 = textnode.TextNode("This is a code node", textnode.TextType.CODE)

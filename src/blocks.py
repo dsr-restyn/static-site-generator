@@ -1,12 +1,12 @@
 from enum import Enum
 
 class BlockType(Enum):
-    PARAGRAPH = "paragraph"
-    HEADING = "heading"
+    PARAGRAPH = "p"
+    HEADING = "h"
     CODE = "code"
-    QUOTE = "quote"
-    ULIST = "ulist"
-    OLIST = "olist"
+    QUOTE = "blockquote"
+    ULIST = "ul"
+    OLIST = "ol"
     
 
 def block_to_blocktype(block: str) -> BlockType:

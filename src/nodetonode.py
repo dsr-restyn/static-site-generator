@@ -1,5 +1,6 @@
 from textnode import TextType, TextNode
 from htmlnode import LeafNode
+from blocks import block_to_blocktype, BlockType
 
 import re
 
@@ -8,11 +9,11 @@ import re
 
 def text_node_to_html(text_node: TextNode):
     if text_node.text_type == TextType.BOLD:
-        return LeafNode("strong", text_node.text)
+        return LeafNode("b", text_node.text)
     elif text_node.text_type == TextType.ITALIC:
         return LeafNode("i", text_node.text)
     elif text_node.text_type == TextType.CODE:
-        return LeafNode("code", text_node.text)
+        return LeafNode("code", text_node.text.strip("`"))
     elif text_node.text_type == TextType.LINK:
         return LeafNode("a", text_node.text, {"href": text_node.url})
     elif text_node.text_type == TextType.IMAGE:
@@ -92,6 +93,7 @@ def split_nodes_link(old_nodes: list[TextNode]) -> list[TextNode]:
 def text_to_textnodes(text: str) -> list[TextNode]:
     init_node = TextNode(text, TextType.TEXT)
     delimiters = [
+        ("```", TextType.CODE),
         ("`", TextType.CODE),
         ("**", TextType.BOLD),
         ("_", TextType.ITALIC)
@@ -105,13 +107,9 @@ def text_to_textnodes(text: str) -> list[TextNode]:
     return nodes
 
 def markdown_to_blocks(markdown: str) -> list[str]:
-    # split into blocks
-    # print(f"{markdown=}")
     blocks = markdown.split("\n\n")
-    # print(f"{blocks=}")
     # remove empty lines
     sans_empty_lines = [block.strip() for block in blocks if block.strip()]
-    # print(f"{sans_empty_lines=}")
     # trim
     trimmed_blocks = ["\n".join(map(lambda s: s.strip(), block.split("\n"))) for block in sans_empty_lines]
     print(f"{trimmed_blocks=}")

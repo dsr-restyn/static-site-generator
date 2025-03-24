@@ -1,4 +1,12 @@
-<div>This is This is <strong>bolded</strong> paragraph text in a p tag here paragraph text in a p tag hereThis is another paragraph with This is another paragraph with <i>italic</i> text and  text and <code>code</code> here here</div>
+<div><pre><code>
+        print("Hello, World!")
+        def foo():
+            return "bar"
+        </code></pre></div>
 
 node:
-ParentNode(div, [LeafNode(None, This is , None), LeafNode(None, This is , None), LeafNode(strong, bolded, None), LeafNode(None,  paragraph text in a p tag here, None), LeafNode(None,  paragraph text in a p tag here, None), LeafNode(None, This is another paragraph with , None), LeafNode(None, This is another paragraph with , None), LeafNode(i, italic, None), LeafNode(None,  text and , None), LeafNode(None,  text and , None), LeafNode(code, code, None), LeafNode(None,  here, None), LeafNode(None,  here, None)], None)
+ParentNode(div, [ParentNode(pre, [LeafNode(code, 
+        print("Hello, World!")
+        def foo():
+            return "bar"
+        , None)], None)], None)
