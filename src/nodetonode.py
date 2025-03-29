@@ -1,3 +1,4 @@
+from typing_extensions import Text
 from textnode import TextType, TextNode
 from htmlnode import LeafNode
 from blocks import block_to_blocktype, BlockType
@@ -20,6 +21,8 @@ def text_node_to_html(text_node: TextNode):
         return LeafNode("img", '', {"src": text_node.url, "alt": text_node.text})
     elif text_node.text_type == TextType.TEXT:
         return LeafNode(None, text_node.text)
+    elif text_node.text_type == TextType.LIST_ITEM:
+        return LeafNode("li", text_node.text)
     else:
         raise ValueError("Invalid text type")
 
@@ -93,10 +96,10 @@ def split_nodes_link(old_nodes: list[TextNode]) -> list[TextNode]:
 def text_to_textnodes(text: str) -> list[TextNode]:
     init_node = TextNode(text, TextType.TEXT)
     delimiters = [
-        ("```", TextType.CODE),
         ("`", TextType.CODE),
         ("**", TextType.BOLD),
-        ("_", TextType.ITALIC)
+        ("_", TextType.ITALIC),
+        # ("- ", TextType.LIST_ITEM)
     ]
     nodes = []
     for char, text_type in delimiters:
@@ -112,5 +115,4 @@ def markdown_to_blocks(markdown: str) -> list[str]:
     sans_empty_lines = [block.strip() for block in blocks if block.strip()]
     # trim
     trimmed_blocks = ["\n".join(map(lambda s: s.strip(), block.split("\n"))) for block in sans_empty_lines]
-    print(f"{trimmed_blocks=}")
     return trimmed_blocks

@@ -7,23 +7,23 @@ class BlockType(Enum):
     QUOTE = "blockquote"
     ULIST = "ul"
     OLIST = "ol"
-    
 
-def block_to_blocktype(block: str) -> BlockType:
+
+def block_to_blocktype(block: str) -> tuple[BlockType, str|None]:
     if block.startswith("#"):
-        return BlockType.HEADING
+        return BlockType.HEADING, "#"
     elif block.startswith("```") and block.endswith("```"):
-        return BlockType.CODE
+        return BlockType.CODE, "```"
     elif all([c.startswith(">") for c in block.split("\n")]):
-        return BlockType.QUOTE
+        return BlockType.QUOTE, ">"
     elif all([c.startswith("- ") for c in block.split("\n")]):
-        return BlockType.ULIST
+        return BlockType.ULIST, "- "
     elif all([c[0].isdigit() and c[1] == "." for c in block.split("\n")]):
         count = 1
         for i in block.split("\n"):
             if i[0] != str(count):
-                return BlockType.PARAGRAPH
+                return BlockType.PARAGRAPH, None
             count += 1
-        return BlockType.OLIST
+        return BlockType.OLIST, "n."
     else:
-        return BlockType.PARAGRAPH
+        return BlockType.PARAGRAPH, None

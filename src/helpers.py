@@ -4,25 +4,16 @@ from nodetonode import markdown_to_blocks, text_to_textnodes, text_node_to_html
 from blocks import block_to_blocktype, BlockType
 
 def code_block_to_html_node(text: str) -> ParentNode:
-    # remove lines containing ``` from the start and end
-    split_text = text.split("\n")
-    print(split_text)
-    if split_text[0] == "```":
-        split_text = split_text[1:]
-    print(split_text)
-    if split_text[-1] == "```":
-        split_text = split_text[:-1]
-        # add newline if last index is ```
-        split_text[-1] = split_text[-1]+"\n"
-    print(split_text)
-    text = "\n".join(split_text).strip("`") # remove ``` from start and end in case code block was inline at all
-    print(text)
+    # Strip leading and trailing whitespace/newlines
+    text = text.strip().strip("\n")
+    if not text.startswith("```") or not text.endswith("```"):
+        raise ValueError("Code block must start and end with ```")
+    text = text.strip("`")
     code_text_node = TextNode(text, TextType.CODE)
     return ParentNode("pre", [text_node_to_html(code_text_node)])
 
 def text_to_children(text: str) -> list[HTMLNode]:
     nodes = text_to_textnodes(text)
-    print(nodes)
     children = []
     for node in nodes:
         if node.text_type == TextType.TEXT:
@@ -31,6 +22,14 @@ def text_to_children(text: str) -> list[HTMLNode]:
             children.append(text_node_to_html(node))
     return children
 
+def strip_block_of_delimiters(block: str, delimiter: str) -> str:
+    split_lines = block.split("\n")
+    return "\n".join([line.strip(delimiter) for line in split_lines])
+    return block.strip(delimiter).strip()
+
+def get_block_delimiter(block: str) -> str:
+    return block[0]
+
 def markdown_to_html_node(markdown: str) -> ParentNode:
     children = []
     # split md into blocks
@@ -38,11 +37,16 @@ def markdown_to_html_node(markdown: str) -> ParentNode:
     # print(blocks)
     # iterate over blocks and create HTMLNodes
     for block in blocks:
-        block_type = block_to_blocktype(block)
+        block_type, md_delimiter = block_to_blocktype(block)
         if block_type != BlockType.CODE:
             tag = block_type.value
             if block_type == BlockType.HEADING:
-                tag = block_type+block.count("#")
+                heading_level = block.count("#")
+                tag = block_type.value+str(heading_level)
+                block = strip_block_of_delimiters(block, "#"*heading_level+" ")
+            else:
+                if md_delimiter:
+                    block = strip_block_of_delimiters(block, md_delimiter)
             text_children = text_to_children(block.replace("\n", " "))
             children.append(ParentNode(tag, text_children))
         else:
