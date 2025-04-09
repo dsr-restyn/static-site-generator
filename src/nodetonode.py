@@ -1,12 +1,8 @@
-from typing_extensions import Text
 from textnode import TextType, TextNode
 from htmlnode import LeafNode
 from blocks import block_to_blocktype, BlockType
 
 import re
-
-# TODO:
-# Make this file make sense, currently its just a bunch of helpers
 
 def text_node_to_html(text_node: TextNode):
     if text_node.text_type == TextType.BOLD:
@@ -99,20 +95,39 @@ def text_to_textnodes(text: str) -> list[TextNode]:
         ("`", TextType.CODE),
         ("**", TextType.BOLD),
         ("_", TextType.ITALIC),
-        # ("- ", TextType.LIST_ITEM)
+        ("- ", TextType.LIST_ITEM),
+        ("1. ", TextType.LIST_ITEM),
     ]
     nodes = []
     for char, text_type in delimiters:
         nodes = split_nodes_delimiter(nodes or [init_node], char, text_type)
+        if text_type == TextType.LIST_ITEM:
+            print(f"nodes: {nodes}")
+
 
     nodes = split_nodes_image(nodes)
     nodes = split_nodes_link(nodes)
     return nodes
 
 def markdown_to_blocks(markdown: str) -> list[str]:
-    blocks = markdown.split("\n\n")
-    # remove empty lines
-    sans_empty_lines = [block.strip() for block in blocks if block.strip()]
-    # trim
-    trimmed_blocks = ["\n".join(map(lambda s: s.strip(), block.split("\n"))) for block in sans_empty_lines]
-    return trimmed_blocks
+    blocks = []
+    current_block = []
+    in_code_block = False
+    for line in markdown.split("\n"):
+        if line.strip().startswith("```"):
+            in_code_block = not in_code_block
+            current_block.append(line)
+            if not in_code_block:
+                blocks.append("\n".join(current_block))
+                current_block = []
+        elif in_code_block:
+            current_block.append(line)
+        elif line.strip() == "":
+            if current_block:
+                blocks.append("\n".join(current_block))
+                current_block = []
+        else:
+            current_block.append(line)
+    if current_block:
+        blocks.append("\n".join(current_block))
+    return blocks

@@ -3,7 +3,9 @@ from helpers import *
 def main():
     print("Static Site Generator started...")
     print("Parsing markdown...")
-    md = """# Sample Markdown
+    md = """
+
+    # Sample Markdown
 
     This is some basic, sample markdown.
 
@@ -13,20 +15,28 @@ def main():
       - Two
       - Three
 
+    ### Third Heading
+
+    #### ordered list
+
+    1. one
+    1. two
+    1. three
+
     > Blockquote
-
     > More Blockquote
+    > Last Blockquote
 
-    And **bold**, _italics_, and even _italics and later **bold**__. Even ~~strikethrough~~. [A link](https://markdowntohtml.com) to somewhere.
+    And **bold**, _italics_, and [A link](https://markdowntohtml.com) to somewhere.
 
     And code highlighting:
 
-    ```js
-    var foo = 'bar';
+    ```
+var foo = 'bar';
 
-    function baz(s) {
-       return foo + ':' + s;
-    }
+function baz(s) {
+    return foo + ':' + s;
+}
     ```
 
     Or inline code like `var foo = 'bar';`.
@@ -44,9 +54,6 @@ def main():
     html = node.to_html()
     with open("template.html", "w") as f:
         f.write(html)
-        f.write("\n\n")
-        f.write("node:\n")
-        f.write(str(node))
     print("Static Site Generator finished...")
 
 if __name__ == "__main__":
