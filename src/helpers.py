@@ -5,7 +5,7 @@ from src.blocks import block_to_blocktype, BlockType
 
 import re
 
-def generate_page(from_path, template_path, to_path):
+def generate_page(from_path, template_path, to_path, basepath):
     with open(from_path, "r") as f:
         content = f.read()
         title = extract_h1_header(content)
@@ -13,7 +13,8 @@ def generate_page(from_path, template_path, to_path):
         template = f.read()
     html_content = markdown_to_html_node(content).to_html()
     with open(to_path, "w") as f:
-        f.write(template.replace("{{ Content }}", html_content).replace("{{ Title }}", title))
+        new_content = template.replace("{{ Content }}", html_content).replace("{{ Title }}", title).replace('href="/', f'href="{basepath}').replace('src="/', f'src="{basepath}')
+        f.write(new_content)
 
 def extract_h1_header(markdown: str) -> str:
     blocks = markdown_to_blocks(markdown)
