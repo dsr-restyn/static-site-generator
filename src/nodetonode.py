@@ -1,6 +1,6 @@
-from textnode import TextType, TextNode
-from htmlnode import LeafNode
-from blocks import block_to_blocktype, BlockType
+from src.textnode import TextType, TextNode
+from src.htmlnode import LeafNode
+from src.blocks import block_to_blocktype, BlockType
 
 import re
 
@@ -105,25 +105,36 @@ def text_to_textnodes(text: str) -> list[TextNode]:
     nodes = split_nodes_link(nodes)
     return nodes
 
-def markdown_to_blocks(markdown: str) -> list[str]:
+def markdown_to_blocks(md):
+    """
+    Splits markdown text into blocks, preserving whitespace for code blocks.
+    """
     blocks = []
+    code_block = False
     current_block = []
-    in_code_block = False
-    for line in markdown.split("\n"):
-        if line.strip().startswith("```"):
-            in_code_block = not in_code_block
-            current_block.append(line)
-            if not in_code_block:
+
+    for line in md.splitlines():
+        if line.strip().startswith("```"):  # Toggle code block state
+            if code_block:
+                current_block.append(line)  # Include the closing ```
                 blocks.append("\n".join(current_block))
                 current_block = []
-        elif in_code_block:
-            current_block.append(line)
-        elif line.strip() == "":
-            if current_block:
-                blocks.append("\n".join(current_block))
-                current_block = []
-        else:
+            else:
+                if current_block:
+                    blocks.append("\n".join(current_block).strip())
+                    current_block = []
+                current_block.append(line)  # Include the opening ```
+            code_block = not code_block
+        elif code_block:
+            current_block.append(line)  # Preserve whitespace inside code blocks
+        elif line.strip():  # Non-empty line outside code block
             current_block.append(line.strip())
-    if current_block:
-        blocks.append("\n".join(current_block))
+        else:  # Empty line outside code block
+            if current_block:
+                blocks.append("\n".join(current_block).strip())
+                current_block = []
+
+    if current_block:  # Add any remaining block
+        blocks.append("\n".join(current_block).strip())
+
     return blocks

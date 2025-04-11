@@ -1,9 +1,13 @@
-<div><h1>Sample Markdown</h1><p>This is some basic, sample markdown.</p><h2>Second Heading</h2><ul><li>One</li><li>Two</li><li>Three</li></ul><h3>Third Heading</h3><h4>ordered list</h4><ol><li>one</li><li>two</li><li>three</li></ol><blockquote> Blockquote
- More Blockquote
- Last Blockquote</blockquote><p>And <b>bold</b>, <i>italics</i>, and <a href="https://markdowntohtml.com">A link</a> to somewhere.</p><p>And code highlighting:</p><pre><code>
-var foo = 'bar';
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ Title }}</title>
+    <link href="/index.css" rel="stylesheet" />
+  </head>
 
-function baz(s) {
-    return foo + ':' + s;
-}
-    </code></pre><p>Or inline code like <code>var foo = 'bar';</code>.</p><p>Or an image of bears</p><p><img src="http://placebear.com/200/200" alt="bears"></img></p><p>The end ...</p></div>
+  <body>
+    <article>{{ Content }}</article>
+  </body>
+</html>
